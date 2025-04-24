@@ -1,6 +1,5 @@
 import torch
 
-import matplotlib.pyplot as plt
 
 
 def mm_scaling_score(gamma, beta):
@@ -77,7 +76,7 @@ def decouple_layer(X_tr, Y_tr, X_data, Y_data=None, build_bank=False, batch_size
     return Y_pred, X_res, Y_res
 
 def timewise_decouple_layer(X_tr, Y_tr, X_data, Y_data=None, tid_dif=0, tid_count=288, tid_tol=3, build_bank=False, gamma=10, beta=2, **model_args):
-    # X_data: [B_te, L], X_tr: [B_tr, L], their tid must be continuous
+    # X_data: [B_te, L], X_tr: [B_tr, L]
 
     assert (Y_data is None and build_bank is False) or (Y_data is not None and build_bank is True)
 
