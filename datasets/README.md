@@ -1,15 +1,16 @@
 ### Unzip data here
 
 ```
-datasets
+datasets/
 .
-├── PEMS08
+├── PEMS08/
 |   └── ...
-├── PEMS04
+├── PEMS04/
 |   └── ...
 .
 .
 .
-└── constructed_data
-    └── ...
+└── constructed_data/
+    └── ... (built by build_dataset.py)
 ```
+
