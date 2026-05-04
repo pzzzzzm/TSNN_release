@@ -1,7 +1,5 @@
 import torch
 
-
-
 def mm_scaling_score(gamma, beta):
     def func(score, mask_min=False):
         if mask_min:
@@ -18,8 +16,6 @@ def mm_scaling_score(gamma, beta):
         return score
     return func
 
-
-
 def score_calculate(memory_bank, input_data, build_bank=False, f_score=mm_scaling_score(10, 2), norm=False, **model_args):
     # mb: [B_tr, L], id: [B_te, L]
     B_tr, L = memory_bank.shape
@@ -30,9 +26,7 @@ def score_calculate(memory_bank, input_data, build_bank=False, f_score=mm_scalin
         
     score = abs(input_data.unsqueeze(dim=1).expand(-1, B_tr, -1) - memory_bank)  # [B_te, B_tr, L]
     score = score.norm(dim=-1, p=2)  # [B_te, B_tr]
-    
     score = f_score(score, build_bank)
-    
     score = score / score.norm(dim=-1, p=1, keepdim=True)
 
     return score
@@ -68,8 +62,6 @@ def decouple_layer(X_tr, Y_tr, X_data, Y_data=None, build_bank=False, batch_size
             Y_pred_i = (alpha*(Y_tr - X_tr.mean(dim=1, keepdim=True))).sum(dim=1) + X_data_i.mean(dim=1, keepdim=True)
             Y_pred.append(Y_pred_i)
 
-
-
     X_res = torch.cat(X_res)
     Y_pred, Y_res = torch.cat(Y_pred) if not build_bank else None, torch.cat(Y_res) if build_bank else None
 
@@ -87,7 +79,6 @@ def timewise_decouple_layer(X_tr, Y_tr, X_data, Y_data=None, tid_dif=0, tid_coun
     X_res = torch.empty_like(X_data)
     Y_res = torch.empty(B_te, L_Y).type(X_data.type()) if build_bank else None
 
-
     for t in range(tid_count):
 
         t_tr = (t + tid_dif)%tid_count
@@ -98,12 +89,8 @@ def timewise_decouple_layer(X_tr, Y_tr, X_data, Y_data=None, tid_dif=0, tid_coun
         X_tr_t = torch.cat([X_tr[(t_+tid_count)%tid_count::tid_count] for t_ in range(t_tr-tid_tol, t_tr+tid_tol+1)])
         Y_tr_t = torch.cat([Y_tr[(t_+tid_count)%tid_count::tid_count] for t_ in range(t_tr-tid_tol, t_tr+tid_tol+1)])
 
-        
-
         score = score_calculate(X_tr_t, X_data_t, build_bank, mm_scaling_score(gamma, beta), False, nbatch_layer=t, **model_args)
         alpha = score.unsqueeze(-1).expand(-1, -1, L)
-
-
 
         X_res_t = X_data_t - (alpha*X_tr_t).sum(dim=1)
         X_res[t::tid_count] = X_res_t
