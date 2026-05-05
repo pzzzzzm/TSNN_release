@@ -16,7 +16,7 @@ pip install torch --index-url https://download.pytorch.org/whl/cu124
 
 You can download the dataset from BasicTS v0.5.8 ([link](https://github.com/GestaltCogTeam/BasicTS/blob/v0.5.8/tutorial/getting_started.md)). *Note that the format of datasets has been changed since BasicTS v1.0.* 
 
-> Because of poor coding habits, `build_dataset.py` currently saves the constructed data to disk in \[*total length $\times$ steps*\]. Please ensure you have enough space when processing large datasets.
+> Because of poor coding habits, `build_dataset.py` currently saves the constructed data to disk in \[*total length * steps*\]. Please ensure you have enough space when processing large datasets.
 
 ## Acknowledgement
 
